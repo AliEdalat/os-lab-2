@@ -125,13 +125,19 @@ panic(char *s)
 
 //PAGEBREAK: 50
 #define BACKSPACE 0x100
+#define LEFT 228
+#define RIGHT 229
+#define UP 226
+#define DOWN 227
 #define CRTPORT 0x3d4
+#define BUFF_SIZE 80
 static ushort *crt = (ushort*)P2V(0xb8000);  // CGA memory
 
 static void
 cgaputc(int c)
 {
   int pos;
+  int backspace_hit = 0;
 
   // Cursor position: col + 80*row.
   outb(CRTPORT, 14);
@@ -139,12 +145,30 @@ cgaputc(int c)
   outb(CRTPORT, 15);
   pos |= inb(CRTPORT+1);
 
+//  cursor_position = pos;
   if(c == '\n')
-    pos += 80 - pos%80;
-  else if(c == BACKSPACE){
-    if(pos > 0) --pos;
+    pos += BUFF_SIZE - pos % BUFF_SIZE;
+  else if(c == BACKSPACE) {
+
+      backspace_hit = 1;
+
+      if (pos % BUFF_SIZE > 2) --pos;
+  } else if(c == LEFT){
+//      ushort *crt_temp
+//      memcpy(v, const void *src, uint n)
+    if (pos % BUFF_SIZE > 2) --pos;
+  } else if(c == RIGHT){
+    if (pos % BUFF_SIZE < 75) ++pos;
+  } else if(c == UP){
+    if(pos > BUFF_SIZE) {
+      memmove(crt, crt + BUFF_SIZE, sizeof(crt[0]) * 23 * BUFF_SIZE);
+      pos -= BUFF_SIZE;
+      memset(crt + pos, 0, sizeof(crt[0]) * (24 * BUFF_SIZE - pos));
+    }
+  } else if(c == DOWN){
+    // Down
   } else
-    crt[pos++] = (c&0xff) | 0x0700;  // black on white
+    crt[pos++] = (c & 0xff) | 0x0700;  // black on white
 
   if(pos < 0 || pos > 25*80)
     panic("pos under/overflow");
@@ -159,7 +183,10 @@ cgaputc(int c)
   outb(CRTPORT+1, pos>>8);
   outb(CRTPORT, 15);
   outb(CRTPORT+1, pos);
-  crt[pos] = ' ' | 0x0700;
+  if(backspace_hit) {
+	  crt[pos] = ' ' | 0x0700;
+	  backspace_hit = 0;
+  }
 }
 
 void
