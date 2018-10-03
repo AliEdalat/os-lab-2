@@ -184,8 +184,8 @@ static inline void
 outb(ushort port, uchar data)
 {
   asm volatile("out %0,%1" : : "a" (data), "d" (port));
-    7c9d:	b8 01 00 00 00       	mov    $0x1,%eax
-    7ca2:	ba f2 01 00 00       	mov    $0x1f2,%edx
+    7c9d:	ba f2 01 00 00       	mov    $0x1f2,%edx
+    7ca2:	b8 01 00 00 00       	mov    $0x1,%eax
     7ca7:	ee                   	out    %al,(%dx)
     7ca8:	ba f3 01 00 00       	mov    $0x1f3,%edx
     7cad:	89 d8                	mov    %ebx,%eax
@@ -208,8 +208,8 @@ outb(ushort port, uchar data)
     7ccb:	83 c8 e0             	or     $0xffffffe0,%eax
     7cce:	ba f6 01 00 00       	mov    $0x1f6,%edx
     7cd3:	ee                   	out    %al,(%dx)
-    7cd4:	b8 20 00 00 00       	mov    $0x20,%eax
-    7cd9:	ba f7 01 00 00       	mov    $0x1f7,%edx
+    7cd4:	ba f7 01 00 00       	mov    $0x1f7,%edx
+    7cd9:	b8 20 00 00 00       	mov    $0x20,%eax
     7cde:	ee                   	out    %al,(%dx)
   outb(0x1F7, 0x20);  // cmd 0x20 - read sectors
 
