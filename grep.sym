@@ -1,6 +1,6 @@
 00000000 .text
-000009e0 .rodata
-00000a30 .eh_frame
+000009e8 .rodata
+00000a38 .eh_frame
 00000d80 .bss
 00000000 .comment
 00000000 .debug_aranges
@@ -14,7 +14,7 @@
 00000000 ulib.c
 00000000 printf.c
 000005e0 printint
-00000a1d digits.1030
+00000a25 digits.1030
 00000000 umalloc.c
 00000d80 freep
 00000d84 base
@@ -41,7 +41,7 @@
 0000052a fork
 000005ba sbrk
 000005ca uptime
-00000d70 __bss_start
+00000d78 __bss_start
 000003c0 memset
 00000000 main
 000000c0 matchstar
@@ -49,7 +49,7 @@
 000005aa dup
 00000da0 buf
 00000480 stat
-00000d70 _edata
+00000d78 _edata
 000011a0 _end
 000001b0 match
 00000592 link

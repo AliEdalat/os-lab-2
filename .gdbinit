@@ -20,9 +20,8 @@ define hook-stop
   set $lastcs = $cs
 end
 
-echo + target remote localhost:26000\n
-target remote localhost:26000
+echo + target remote localhost:25999\n
+target remote localhost:25999
 
 echo + symbol-file kernel\n
 symbol-file kernel
-
