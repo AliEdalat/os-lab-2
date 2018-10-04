@@ -151,7 +151,7 @@ cgaputc(int c)
       //backspace_hit = 1;
       if (pos % BUFF_SIZE > 2){
  	--pos;
-	memmove(crt + pos, crt + pos + 1, 128 - pos % 128);
+	memmove(crt + pos, crt + pos + 1, sizeof(crt[0])*(24*80 - pos));
       }
   } else if(c == LEFT){
     if (pos % BUFF_SIZE > 2) --pos;
@@ -162,7 +162,7 @@ cgaputc(int c)
   } else if(c == DOWN){
     // Down
   } else{
-    memmove(crt + pos + 1, crt + pos, 128 - pos % 128);
+    memmove(crt + pos + 1, crt + pos, sizeof(crt[0])*(24*80 - pos));
     crt[pos++] = (c & 0xff) | 0x0700;  // black on white
   }
 

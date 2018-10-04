@@ -137,7 +137,7 @@ static void
 cgaputc(int c)
 {
   int pos;
-  int backspace_hit = 0;
+  //int backspace_hit = 0;
 
   // Cursor position: col + 80*row.
   outb(CRTPORT, 14);
@@ -145,31 +145,26 @@ cgaputc(int c)
   outb(CRTPORT, 15);
   pos |= inb(CRTPORT+1);
 
-//  cursor_position = pos;
   if(c == '\n')
     pos += BUFF_SIZE - pos % BUFF_SIZE;
   else if(c == BACKSPACE) {
-
-      backspace_hit = 1;
-
-      if (pos % BUFF_SIZE > 2) --pos;
+      //backspace_hit = 1;
+      if (pos % BUFF_SIZE > 2){
+ 	--pos;
+	memmove(crt + pos, crt + pos + 1, sizeof(crt[0]) * (128 - (pos % 128)));
+      }
   } else if(c == LEFT){
-//      ushort *crt_temp
-//      memcpy(v, const void *src, uint n)
     if (pos % BUFF_SIZE > 2) --pos;
   } else if(c == RIGHT){
-    if (pos % BUFF_SIZE < 75) ++pos;
+    if (crt[pos] != (' ' | 0x0700)) ++pos;
   } else if(c == UP){
-    if(pos > BUFF_SIZE) {
-      memmove(crt, crt + BUFF_SIZE, sizeof(crt[0]) * 23 * BUFF_SIZE);
-      pos -= BUFF_SIZE;
-      memset(crt + pos, 0, sizeof(crt[0]) * (24 * BUFF_SIZE - pos));
-    }
+    // Up
   } else if(c == DOWN){
     // Down
   } else{
-    memmove(crt + pos + 1, crt + pos, 128 - pos % 128);
+    memmove(crt + pos + 1, crt + pos, sizeof(crt[0]) * (128 - (pos % 128)));
     crt[pos++] = (c & 0xff) | 0x0700;  // black on white
+  }
 
   if(pos < 0 || pos > 25*80)
     panic("pos under/overflow");
@@ -184,10 +179,10 @@ cgaputc(int c)
   outb(CRTPORT+1, pos>>8);
   outb(CRTPORT, 15);
   outb(CRTPORT+1, pos);
-  if(backspace_hit) {
-	  crt[pos] = ' ' | 0x0700;
-	  backspace_hit = 0;
-  }
+ // if(backspace_hit) {
+  //	crt[pos] = ' ' | 0x0700;
+//	backspace_hit = 0;
+ // }
 }
 
 void
@@ -201,8 +196,9 @@ consputc(int c)
 
   if(c == BACKSPACE){
     uartputc('\b'); uartputc(' '); uartputc('\b');
-  } else
+  } else if(c != UP && c != DOWN && c != LEFT && c != RIGHT){
     uartputc(c);
+  }
   cgaputc(c);
 }
 
@@ -240,6 +236,12 @@ consoleintr(int (*getc)(void))
         input.e--;
         consputc(BACKSPACE);
       }
+      break;
+    case UP:
+    case DOWN:
+    case LEFT:
+    case RIGHT:
+      consputc(c);
       break;
     default:
       if(c != 0 && input.e-input.r < INPUT_BUF){
