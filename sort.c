@@ -1,6 +1,7 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
+#include "fcntl.h"
 
 void swap(int *xp, int *yp)
 {
@@ -23,15 +24,11 @@ void bubble_sort(int* arr, int* indices, int n)
             }
         }
     }
-    for (i = 0; i < n - 1; i++)
-    {
-        printf(1, "%d ", indices[i]);
-    }
 }
 
 void write_to_file(int* argv, int* indices, int argc)
 {
-    int fd;
+    int fd, i;
 
     fd = open("result.txt", O_CREATE | O_WRONLY); //TODO: check file name from the project description
 
@@ -51,7 +48,7 @@ void write_to_file(int* argv, int* indices, int argc)
 int
 main(int argc, char* argv[])
 {
-    int fd, i;
+    int i;
     int nums[argc - 1];
     int indices[argc - 1];
 
