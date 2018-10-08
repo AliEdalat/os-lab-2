@@ -20,13 +20,13 @@ void bubble_sort(int* arr, int* indices, int n)
             if (arr[j] > arr[j+1])
             {
                 swap(&arr[j], &arr[j+1]);
-                indices[j] = j+1;
+                swap(&indices[j], &indices[j+1]);
             }
         }
     }
 }
 
-void write_to_file(int* argv, int* indices, int argc)
+void write_to_file(char** argv, int* indices, int argc)
 {
     int fd, i;
 
@@ -40,7 +40,8 @@ void write_to_file(int* argv, int* indices, int argc)
 
     for (i = 0; i < argc - 1; ++i)
     {
-        write(fd, argv[indices[i]], strlen(argv));
+        write(fd, argv[indices[i] + 1], strlen(argv[indices[i] + 1]));
+	write(fd, " ", 1);
     }
     write(fd, "\n", 1);
 }
@@ -64,12 +65,6 @@ main(int argc, char* argv[])
 
     bubble_sort(nums, indices, argc - 1);
 
-    for (i = 0; i < argc; ++i)
-    {
-        printf(1, "%s ", argv[indices[i]]);
-    }
-    printf(1, "\n");
-
-//    write_to_file(argv, indices, argc);
+    write_to_file(argv, indices, argc);
     exit();
 }
