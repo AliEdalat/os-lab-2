@@ -30,7 +30,8 @@ void write_to_file(char** argv, int* indices, int argc)
 {
     int fd, i;
 
-    fd = open("result.txt", O_CREATE | O_WRONLY); //TODO: check file name from the project description
+    unlink("result.txt");
+    fd = open("result.txt", O_CREATE | O_WRONLY);
 
     if (fd < 0)
     {
@@ -66,5 +67,8 @@ main(int argc, char* argv[])
     bubble_sort(nums, indices, argc - 1);
 
     write_to_file(argv, indices, argc);
+
+    printf(1, "pid: %d\n", getpid());
+
     exit();
 }
