@@ -132,8 +132,8 @@ panic(char *s)
 #define CRTPORT 0x3d4
 #define BUFF_SIZE 80
 static ushort *crt = (ushort*)P2V(0xb8000);  // CGA memory
-static int maximum_pos = 0;
-static int minimum_pos = 24*80;
+//static int maximum_pos = 0;
+//static int minimum_pos = 24*80;
 static void
 cgaputc(int c)
 {
@@ -145,24 +145,23 @@ cgaputc(int c)
   outb(CRTPORT, 15);
   pos |= inb(CRTPORT+1);
 
-  if(pos > maximum_pos)
-    maximum_pos = pos;
-  if(pos < minimum_pos)
-    minimum_pos = pos;
+  //if(pos > maximum_pos)
+  //  maximum_pos = pos;
+
   if(c == '\n')
     pos += BUFF_SIZE - pos % BUFF_SIZE;
   else if(c == BACKSPACE) {
       //backspace_hit = 1;
-      if (pos > minimum_pos){
+      if (pos > 0){
  	--pos;
-	maximum_pos = pos + 1;
+	//maximum_pos = pos + 1;
 	memmove(crt + pos, crt + pos + 1, sizeof(crt[0])*(24*80 - pos));
       }
   } else if(c == LEFT){
-      if (pos > minimum_pos)
+      if (pos > 0)
 	--pos;
   } else if(c == RIGHT){
-      if (pos < maximum_pos) ++pos;
+      /*if (pos < maximum_pos)*/ ++pos;
   } else if(c == UP){
     // Up
   } else if(c == DOWN){
@@ -170,8 +169,8 @@ cgaputc(int c)
   } else{
     memmove(crt + pos + 1, crt + pos, sizeof(crt[0])*(24*80 - pos));
     crt[pos++] = (c & 0xff) | 0x0700;  // black on white
-    if(pos > maximum_pos)
-      maximum_pos = pos;
+   // if(pos > maximum_pos)
+     // maximum_pos = pos;
   }
 
   if(pos < 0 || pos > 25*80)
@@ -258,7 +257,10 @@ consoleintr(int (*getc)(void))
       }
       break;
     case RIGHT:
-      consputc(c);
+      if(input.e-input.r < INPUT_BUF){
+      	input.e++;
+        consputc(c);
+      }
       break;
     default:
       if(c != 0 && input.e-input.r < INPUT_BUF){
