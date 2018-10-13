@@ -236,14 +236,15 @@ consoleintr(int (*getc)(void))
       while(input.max != input.w &&
             input.buf[(input.max-1) % INPUT_BUF] != '\n'){
         input.max--;
-	input.e--;
+	      input.e--;
         consputc(BACKSPACE);
       }
       break;
     case C('H'): case '\x7f':  // Backspace
-      if(input.max != input.w){
+      if(input.e != input.w){
         input.max--;
-	input.e--;
+	      input.e--;
+        memmove(input.buf + input.e, input.buf + input.e + 1, input.max - input.e); // TODO: check indices
         consputc(BACKSPACE);
       }
       break;
@@ -255,34 +256,34 @@ consoleintr(int (*getc)(void))
       break;
     case LEFT:
       if(input.e != input.w){
-	input.e--;
+	      input.e--;
         consputc(c);
       }
       break;
     case RIGHT:
       if(input.e < input.max){
-	input.e++;
+	      input.e++;
         consputc(c);
       }
       break;
     default:
-      if(c != 0 && input.max-input.r < INPUT_BUF){
+      if(c != 0 && input.max < INPUT_BUF){
         c = (c == '\r') ? '\n' : c;
-	memmove(input.buf + input.e + 1, input.buf + input.e, input.max - input.e);
-	if(c != '\n'){
+	      memmove(input.buf + input.e + 1, input.buf + input.e, input.max - input.e);
+	      if(c != '\n'){
 	        input.buf[input.e++ % INPUT_BUF] = c;
-		input.max++;
+	      	input.max++;
 	        consputc(c);
-	}
-	else{
-		input.buf[(input.max++) % INPUT_BUF] = c;
-		for (int i = input.r; i < input.max + 1; ++i)
-			printint(-input.buf[i], 10, 1);
-		consputc(c);
-	}
-        if(c == '\n' || c == C('D') || input.max == input.r+INPUT_BUF){
+	      }
+        else{
+          input.buf[input.max++ % INPUT_BUF] = c;
+          // for (int i = input.r; i < input.max + 1; ++i)
+          //   printint(-input.buf[i], 10, 1);
+          consputc(c);
+        }
+        if(c == '\n' || c == C('D') || input.max == input.r + INPUT_BUF){
           input.w = input.max;
-	  input.e = input.max;
+	        input.e = 0;
           wakeup(&input.r);
         }
       }
