@@ -269,21 +269,19 @@ consoleintr(int (*getc)(void))
     default:
       if(c != 0 && input.max < INPUT_BUF){
         c = (c == '\r') ? '\n' : c;
-	      memmove(input.buf + input.e + 1, input.buf + input.e, input.max - input.e);
-	      if(c != '\n'){
-	        input.buf[input.e++ % INPUT_BUF] = c;
-	      	input.max++;
-	        consputc(c);
-	      }
+	if(c != '\n'){
+	  memmove(input.buf + input.e + 1, input.buf + input.e, input.max - input.e);	
+	  input.buf[input.e++ % INPUT_BUF] = c;
+	  input.max++;
+	  consputc(c);
+	}
         else{
           input.buf[input.max++ % INPUT_BUF] = c;
-          // for (int i = input.r; i < input.max + 1; ++i)
-          //   printint(-input.buf[i], 10, 1);
           consputc(c);
         }
         if(c == '\n' || c == C('D') || input.max == input.r + INPUT_BUF){
           input.w = input.max;
-	        input.e = 0;
+	  input.e = input.max;
           wakeup(&input.r);
         }
       }
