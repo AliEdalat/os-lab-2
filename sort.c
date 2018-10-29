@@ -70,5 +70,7 @@ main(int argc, char* argv[])
 
     printf(1, "pid: %d\n", getpid());
 
+    inc_num(3);
+
     exit();
 }

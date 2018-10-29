@@ -37,6 +37,13 @@ sys_kill(void)
 }
 
 int
+sys_inc_num(int num)
+{
+  cprintf("num : %d", num+1);
+  return 0;
+}
+
+int
 sys_getpid(void)
 {
   return myproc()->pid;
