@@ -75,6 +75,7 @@ allocproc(void)
 {
   struct proc *p;
   char *sp;
+  int i;
 
   acquire(&ptable.lock);
 
@@ -88,6 +89,10 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  for (i = 0; i < 23; ++i)
+  {
+    p->syscalls[i].count = 0;
+  }
 
   release(&ptable.lock);
 
@@ -485,7 +490,7 @@ invocation_log(int pid){
       {
         if (p->syscalls[i].count > 0)
         {
-          cprintf("syscall : %s\n", p->syscalls[i].name);
+          cprintf("%d syscall : %s\n", i+1, p->syscalls[i].name);
           release(&ptable.lock);
           return 0; 
         } 
