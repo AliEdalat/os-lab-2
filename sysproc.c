@@ -37,9 +37,12 @@ sys_kill(void)
 }
 
 int
-sys_inc_num(int num)
+sys_inc_num(void)
 {
-  cprintf("num : %d", num+1);
+  int num;
+  if(argint(0, &num) < 0)
+    return -1;
+  cprintf("num : %d\n", num+1);
   return 0;
 }
 
