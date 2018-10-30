@@ -1,6 +1,7 @@
 #include "types.h"
 #include "defs.h"
 #include "param.h"
+#include "date.h"
 #include "memlayout.h"
 #include "mmu.h"
 #include "x86.h"
@@ -490,7 +491,9 @@ invocation_log(int pid){
       {
         if (p->syscalls[i].count > 0)
         {
-          cprintf("%d syscall : %s\n", i+1, p->syscalls[i].name);
+          cprintf(" syscall : ID :%d NAME:%s DATE: sec:%d min:%d hour:%d day:%d month:%d year:%d\n", i+1,
+              p->syscalls[i].name, p->syscalls[i].date->second, p->syscalls[i].date->minute, p->syscalls[i].date->hour,
+              p->syscalls[i].date->day, p->syscalls[i].date->month, p->syscalls[i].date->year);
           release(&ptable.lock);
           return 0; 
         } 
