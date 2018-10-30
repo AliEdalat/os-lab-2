@@ -10,6 +10,7 @@
 #include "sleeplock.h"
 #include "fs.h"
 #include "file.h"
+#include "date.h"
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"

@@ -39,7 +39,7 @@ struct context {
 
 struct systemcall {
   uint count;
-  struct rtcdate* date;
+  struct rtcdate date;
   char name[30];
 };
 
