@@ -72,5 +72,7 @@ main(int argc, char* argv[])
 
     inc_num(3);
 
+    invoked_syscalls(getpid());
+
     exit();
 }

@@ -32,6 +32,9 @@ struct context {
   uint eip;
 };
 
+struct systemcall {
+};
+
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
 // Per-process state
@@ -49,6 +52,7 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  struct systemcall *syscalls[23];
 };
 
 // Process memory is laid out contiguously, low addresses first:

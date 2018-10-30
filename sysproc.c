@@ -47,6 +47,17 @@ sys_inc_num(void)
 }
 
 int
+sys_invoked_syscalls(void)
+{
+  int pid;
+
+  if(argint(0, &pid) < 0)
+    return -1;
+  cprintf("num : %d\n", pid);
+  return 0;
+}
+
+int
 sys_getpid(void)
 {
   return myproc()->pid;

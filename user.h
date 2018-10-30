@@ -4,6 +4,7 @@ struct rtcdate;
 // system calls
 int fork(void);
 int inc_num(int num);
+void invoked_syscalls(int pid);
 int exit(void) __attribute__((noreturn));
 int wait(void);
 int pipe(int*);
