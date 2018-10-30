@@ -106,6 +106,32 @@ extern int sys_uptime(void);
 extern int sys_inc_num(void);
 extern int sys_invoked_syscalls(void);
 
+static char* syscalls_string [23] = {
+"sys_fork",
+"sys_exit",
+"sys_wait",
+"sys_pipe",
+"sys_read",
+"sys_kill",
+"sys_exec",
+"sys_fstat",
+"sys_chdir",
+"sys_dup",
+"sys_getpid",
+"sys_sbrk",
+"sys_sleep",
+"sys_uptime",
+"sys_open",
+"sys_write",
+"sys_mknod",
+"sys_unlink",
+"sys_link",
+"sys_mkdir",
+"sys_close",
+"sys_inc_num",
+"sys_invoked_syscalls",
+};
+
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
 [SYS_exit]    sys_exit,
@@ -141,6 +167,8 @@ syscall(void)
   num = curproc->tf->eax;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     curproc->tf->eax = syscalls[num]();
+    curproc->syscalls[num].count = curproc->syscalls[num].count + 1;
+    safestrcpy(curproc->syscalls[num].name, syscalls_string[num-1], strlen(syscalls_string[num-1]));
   } else {
     cprintf("%d %s: unknown sys call %d\n",
             curproc->pid, curproc->name, num);

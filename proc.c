@@ -473,6 +473,30 @@ wakeup(void *chan)
   release(&ptable.lock);
 }
 
+int
+invocation_log(int pid){
+  struct proc *p;
+  int i;
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pid == pid){
+      for (i = 0; i < 23; ++i)
+      {
+        if (p->syscalls[i].count > 0)
+        {
+          cprintf("syscall : %s\n", p->syscalls[i].name);
+          release(&ptable.lock);
+          return 0; 
+        } 
+      }
+    }
+  }
+  cprintf("not found!");
+  release(&ptable.lock);
+  return -1;
+}
+
 // Kill the process with the given pid.
 // Process won't exit until it returns
 // to user space (see trap in trap.c).
