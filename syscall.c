@@ -168,8 +168,8 @@ syscall(void)
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     curproc->tf->eax = syscalls[num]();
     curproc->syscalls[num].count = curproc->syscalls[num].count + 1;
-    safestrcpy(curproc->syscalls[num].name, syscalls_string[num-1], strlen(syscalls_string[num-1]));
-    cmostime(curproc->syscalls[num].date);
+    safestrcpy(curproc->syscalls[num].name, syscalls_string[num-1], strlen(syscalls_string[num-1])+1);
+   // cmostime(curproc->syscalls[num].date);
   } else {
     cprintf("%d %s: unknown sys call %d\n",
             curproc->pid, curproc->name, num);
