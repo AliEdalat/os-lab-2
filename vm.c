@@ -2,6 +2,7 @@
 #include "types.h"
 #include "defs.h"
 #include "x86.h"
+#include "date.h"
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"

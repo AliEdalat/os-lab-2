@@ -13,6 +13,7 @@
 #include "defs.h"
 #include "param.h"
 #include "stat.h"
+#include "date.h"
 #include "mmu.h"
 #include "proc.h"
 #include "spinlock.h"

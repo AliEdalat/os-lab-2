@@ -1,7 +1,7 @@
 #include "types.h"
 #include "defs.h"
 #include "param.h"
-//#include "date.h"
+#include "date.h"
 #include "memlayout.h"
 #include "mmu.h"
 #include "x86.h"
@@ -498,7 +498,10 @@ invocation_log(int pid){
       }
     }
   }
-  cprintf("not found!");
+  if (status < 0)
+  {
+    cprintf("pid not found!\n"); 
+  }
   release(&ptable.lock);
   return status;
 }
