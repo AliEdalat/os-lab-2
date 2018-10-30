@@ -32,15 +32,27 @@ struct context {
   uint eip;
 };
 
-// struct syscallarg {
-//   char type[30];
-//   int
-// }
+struct syscallarg {
+  char type[30];
+  int int_argv;
+  char* str_argv;
+  char** ptr_argv;
+  struct syscallarg* next;
+};
+
+struct date {
+  struct rtcdate date;
+  int time;
+  struct date* next;
+};
 
 struct systemcall {
   uint count;
-  struct rtcdate date;
+  struct date* datelist;
+  struct date* datelist_end;
   char name[30];
+  struct syscallarg* arglist;
+  struct syscallarg* arglist_end;
 };
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };

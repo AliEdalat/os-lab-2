@@ -168,9 +168,22 @@ syscall(void)
   num = curproc->tf->eax;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     curproc->tf->eax = syscalls[num]();
+    if (curproc->syscalls[num].count == 0){
+    	curproc->syscalls[num].datelist = (struct date*)kalloc();
+    	curproc->syscalls[num].datelist->next = 0;
+    	curproc->syscalls[num].datelist_end = curproc->syscalls[num].datelist;
+    	curproc->syscalls[num].arglist = (struct syscallarg*)kalloc();
+    	curproc->syscalls[num].arglist->next = 0;
+    	curproc->syscalls[num].arglist_end = curproc->syscalls[num].arglist;
+    }else{
+    	curproc->syscalls[num].datelist_end->next = (struct date*)kalloc();
+    	curproc->syscalls[num].datelist_end = curproc->syscalls[num].datelist_end->next;
+    	curproc->syscalls[num].arglist_end->next = (struct syscallarg*)kalloc();
+    	curproc->syscalls[num].arglist_end = curproc->syscalls[num].arglist_end->next;
+    }
     curproc->syscalls[num].count = curproc->syscalls[num].count + 1;
     safestrcpy(curproc->syscalls[num].name, syscalls_string[num-1], strlen(syscalls_string[num-1])+1);
-   	cmostime(&(curproc->syscalls[num].date));
+   	cmostime(&(curproc->syscalls[num].datelist_end->date));
   } else {
     cprintf("%d %s: unknown sys call %d\n",
             curproc->pid, curproc->name, num);
