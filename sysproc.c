@@ -44,6 +44,7 @@ sys_inc_num(void)
     return -1;
   cprintf("num : %d\n", num+1);
   myproc()->syscalls[22].arglist_end->int_argv = num;
+  cprintf("%d list : %d\n",myproc()->pid, myproc()->syscalls[22].arglist_end->int_argv);
   return 0;
 }
 
