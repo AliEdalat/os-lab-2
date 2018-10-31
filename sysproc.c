@@ -43,6 +43,7 @@ sys_inc_num(void)
   if(argint(0, &num) < 0)
     return -1;
   cprintf("num : %d\n", num+1);
+  myproc()->syscalls[22].arglist_end->int_argv = num;
   return 0;
 }
 

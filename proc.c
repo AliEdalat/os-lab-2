@@ -492,12 +492,16 @@ invocation_log(int pid){
         if (p->syscalls[i].count > 0)
         {
           struct date* d = p->syscalls[i].datelist;
-          //struct syscallarg* a = p->syscalls[i].datelist;
+          struct syscallarg* a = p->syscalls[i].arglist_end;
           for (; d != 0; d = d->next)
           {
             cprintf("%d syscall : ID :%d NAME:%s DATE: %d:%d:%d %d-%d-%d\n",p->syscalls[i].count, i+1,
               p->syscalls[i].name, d->date.second, d->date.minute, d->date.hour, d->date.day, d->date.month,
               d->date.year);
+            if (i == 22)
+            {
+              cprintf(" list (%s %d)\n", a->type, a->int_argv);
+            }
           }
            status = 0;
         } 

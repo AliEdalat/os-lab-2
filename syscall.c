@@ -159,6 +159,18 @@ static int (*syscalls[])(void) = {
 [SYS_invoked_syscalls]   sys_invoked_syscalls,
 };
 
+void fill_arglist(struct syscallarg* end, int type){
+	cprintf("t : %d", type);
+	switch(type){
+		case 1:
+			safestrcpy(end->type, "void", strlen("void")+1);
+		case 2:
+			safestrcpy(end->type, "int", strlen("int")+1);
+		case 22:
+			safestrcpy(end->type, "int", strlen("int")+1);
+	}
+}
+
 void
 syscall(void)
 {
@@ -186,6 +198,7 @@ syscall(void)
     curproc->syscalls[num].count = curproc->syscalls[num].count + 1;
     safestrcpy(curproc->syscalls[num].name, syscalls_string[num-1], strlen(syscalls_string[num-1])+1);
    	cmostime(&(curproc->syscalls[num].datelist_end->date));
+   	fill_arglist(curproc->syscalls[num].arglist_end, num);
   } else {
     cprintf("%d %s: unknown sys call %d\n",
             curproc->pid, curproc->name, num);
