@@ -177,8 +177,10 @@ syscall(void)
     	curproc->syscalls[num].arglist_end = curproc->syscalls[num].arglist;
     }else{
     	curproc->syscalls[num].datelist_end->next = (struct date*)kalloc();
+        curproc->syscalls[num].datelist_end->next->next = 0;
     	curproc->syscalls[num].datelist_end = curproc->syscalls[num].datelist_end->next;
     	curproc->syscalls[num].arglist_end->next = (struct syscallarg*)kalloc();
+        curproc->syscalls[num].arglist_end->next->next = 0;
     	curproc->syscalls[num].arglist_end = curproc->syscalls[num].arglist_end->next;
     }
     curproc->syscalls[num].count = curproc->syscalls[num].count + 1;
