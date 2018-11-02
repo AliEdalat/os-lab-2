@@ -478,24 +478,6 @@ wakeup(void *chan)
   wakeup1(chan);
   release(&ptable.lock);
 }
-void
-update_inc_syscall_list(int num, int pid)
-{
-  struct proc *p;
-
-  acquire(&ptable.lock);
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-  {
-    if(p->pid == pid){
-      p->syscalls[22].arglist_end->int_argv = num;
-      cprintf("%d list : %d\n",p->pid, p->syscalls[22].arglist_end->int_argv);
-      release(&ptable.lock);
-      return;
-    }
-  }
-  cprintf("pid not found for updating list!!!");
-  release(&ptable.lock);
-}
 
 int
 invocation_log(int pid)

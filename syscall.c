@@ -163,13 +163,20 @@ static int (*syscalls[])(void) = {
 };
 
 void fill_arglist(struct syscallarg* end, int type){
+	int int_arg;
 	switch(type){
 		case 1:
-			safestrcpy(end->type, "void", strlen("void")+1);
+			safestrcpy(end->type, "void", strlen("void")+1);break;
 		case 2:
-			safestrcpy(end->type, "int", strlen("int")+1);
+			safestrcpy(end->type, "int", strlen("int")+1);break;
 		case 22:
 			safestrcpy(end->type, "int", strlen("int")+1);
+			if (argint(0, &int_arg) < 0){
+   				cprintf("inc_num: bad arg val?\n");
+   				break;
+			}
+			end->int_argv = int_arg;
+			break;
 	}
 }
 

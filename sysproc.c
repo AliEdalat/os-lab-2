@@ -43,7 +43,6 @@ sys_inc_num(void)
   if(argint(0, &num) < 0)
     return -1;
   cprintf("num : %d\n", num+1);
-  update_inc_syscall_list(num, myproc()->pid);
   return 0;
 }
 
