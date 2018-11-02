@@ -64,6 +64,17 @@ sys_invoked_syscalls(void)
 }
 
 int
+sys_get_count(void)
+{
+  int pid, sysnum;
+
+  if (argint(0, &pid) < 0 || argint(1, &sysnum) < 0)
+    return -1;
+
+  return get_count(pid, sysnum);
+}
+
+int
 sys_getpid(void)
 {
   return myproc()->pid;
