@@ -5,6 +5,7 @@ struct rtcdate;
 int fork(void);
 int inc_num(int num);
 void invoked_syscalls(int pid);
+int get_count(int pid, int sysnum);
 int exit(void) __attribute__((noreturn));
 int wait(void);
 int pipe(int*);

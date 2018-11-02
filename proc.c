@@ -480,12 +480,14 @@ wakeup(void *chan)
 }
 
 int
-invocation_log(int pid){
+invocation_log(int pid)
+{
   struct proc *p;
   int i, status = -1;
 
   acquire(&ptable.lock);
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
     if(p->pid == pid){
       for (i = 0; i < 23; ++i)
       {
@@ -498,23 +500,54 @@ invocation_log(int pid){
             cprintf("%d syscall : ID :%d NAME:%s DATE: %d:%d:%d %d-%d-%d\n",p->syscalls[i].count, i+1,
               p->syscalls[i].name, d->date.second, d->date.minute, d->date.hour, d->date.day,
               d->date.month, d->date.year);
+
             if (i == 22)
-            {
               cprintf("%d %s list (%s %d)\n",p->pid, p->syscalls[i].name, p->syscalls[i].arglist->type,
                 p->syscalls[i].arglist->int_argv);
-            }
           }
-           status = 0;
+          status = 0;
         } 
       }
     }
   }
-  if (status < 0)
-  {
-    cprintf("pid not found!\n"); 
-  }
+
   release(&ptable.lock);
+
+  if (status == -1)
+    cprintf("pid not found!\n");
+
   return status;
+}
+
+int
+get_count(int pid, int sysnum)
+{
+  struct proc *p;
+  struct systemcall *s;
+  int i, count, status = -1;
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    if (p->syscalls[i].count > 0)
+    {
+      if (p->pid == pid)
+      {
+        count = p->syscalls[sysnum].count;
+        status = 0;
+      }
+    }
+  }
+
+  release(&ptable.lock);
+
+  if(status == -1)
+  {
+    cprintf("pid not found!\n");
+    return -1;
+  }
+
+  return count;
 }
 
 // Kill the process with the given pid.
