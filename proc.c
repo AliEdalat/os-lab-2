@@ -523,30 +523,25 @@ int
 get_count(int pid, int sysnum)
 {
   struct proc *p;
-  struct systemcall *s;
-  int i, count, status = -1;
+  int count = 0, status = -1;
 
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
   {
-    if (p->syscalls[i].count > 0)
-    {
-      if (p->pid == pid)
-      {
-        count = p->syscalls[sysnum].count;
-        status = 0;
-      }
-    }
+     if (p->pid == pid)
+     {
+       count = p->syscalls[sysnum-1].count;
+       status = 0;
+     }
   }
-
-  release(&ptable.lock);
 
   if(status == -1)
   {
     cprintf("pid not found!\n");
+    release(&ptable.lock);
     return -1;
   }
-
+  release(&ptable.lock);
   return count;
 }
 

@@ -73,6 +73,7 @@ main(int argc, char* argv[])
     inc_num(3);
 
     invoked_syscalls(getpid());
+    printf(1, "syscall: %d count: %d\n", 23, get_count(getpid(), 23));
 
     exit();
 }

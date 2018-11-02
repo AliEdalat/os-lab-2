@@ -71,7 +71,7 @@ sys_get_count(void)
   if (argint(0, &pid) < 0 || argint(1, &sysnum) < 0)
     return -1;
   result = get_count(pid, sysnum);
-  cprintf("count_syscall: pid: %d sysnum: %d res:%d", pid, sysnum, result);
+  cprintf("count_syscall: pid: %d sysnum: %d res:%d\n", pid, sysnum, result);
   return result;
 }
 
