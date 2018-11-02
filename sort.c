@@ -71,9 +71,8 @@ main(int argc, char* argv[])
     printf(1, "pid: %d\n", getpid());
 
     inc_num(3);
-
+    inc_num(3);
+    printf(1, "syscall: %d count: %d\n", 22, get_count(getpid(), 22));
     invoked_syscalls(getpid());
-    printf(1, "syscall: %d count: %d\n", 23, get_count(getpid(), 23));
-
     exit();
 }

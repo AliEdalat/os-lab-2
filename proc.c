@@ -90,7 +90,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-  for (i = 0; i < 23; ++i)
+  for (i = 0; i < 24; ++i)
   {
     p->syscalls[i].count = 0;
   }
@@ -489,7 +489,7 @@ invocation_log(int pid)
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
   {
     if(p->pid == pid){
-      for (i = 0; i < 23; ++i)
+      for (i = 0; i < 24; ++i)
       {
         if (p->syscalls[i].count > 0)
         {
@@ -501,9 +501,13 @@ invocation_log(int pid)
               p->syscalls[i].name, d->date.second, d->date.minute, d->date.hour, d->date.day,
               d->date.month, d->date.year);
 
-            if (i == 22)
-              cprintf("%d %s list (%s %d)\n",p->pid, p->syscalls[i].name, p->syscalls[i].arglist->type,
-                p->syscalls[i].arglist->int_argv);
+            if (i == 21)
+              cprintf("%d %s list (%s %d)\n",p->pid, p->syscalls[i].name, p->syscalls[i].arglist->type[0],
+                p->syscalls[i].arglist->int_argv[0]);
+            if (i == 23)
+              cprintf("%d %s count (%s %d, %s %d)\n",p->pid, p->syscalls[i].name,
+                p->syscalls[i].arglist->type[0],p->syscalls[i].arglist->int_argv[0],
+                p->syscalls[i].arglist->type[1],p->syscalls[i].arglist->int_argv[1]);
           }
           status = 0;
         } 
@@ -520,7 +524,7 @@ invocation_log(int pid)
 }
 
 int
-get_count(int pid, int sysnum)
+get_syscall_count(int pid, int sysnum)
 {
   struct proc *p;
   int count = 0, status = -1;

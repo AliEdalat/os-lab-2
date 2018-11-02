@@ -35,10 +35,10 @@ struct context {
 };
 
 struct syscallarg {
-  char type[30];
-  int int_argv;
-  char* str_argv;
-  char** ptr_argv;
+  char type[8][30];
+  int int_argv[8];
+  char* str_argv[8];
+  char** ptr_argv[8];
   struct syscallarg* next;
 };
 
