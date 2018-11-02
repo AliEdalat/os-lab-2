@@ -591,6 +591,7 @@ procdump(void)
   struct proc *p;
   char *state;
   uint pc[10];
+  int count=0;
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED)
@@ -599,7 +600,9 @@ procdump(void)
       state = states[p->state];
     else
       state = "???";
-    cprintf("%d %s %s", p->pid, state, p->name);
+    for(i=0;i<24;i++)
+      count += p->syscalls[i].count;
+    cprintf("%d %s %s count:%d", p->pid, state, p->name,count);
     if(p->state == SLEEPING){
       getcallerpcs((uint*)p->context->ebp+2, pc);
       for(i=0; i<10 && pc[i] != 0; i++)
