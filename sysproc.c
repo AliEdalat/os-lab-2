@@ -66,12 +66,13 @@ sys_invoked_syscalls(void)
 int
 sys_get_count(void)
 {
-  int pid, sysnum;
+  int pid, sysnum, result;
 
   if (argint(0, &pid) < 0 || argint(1, &sysnum) < 0)
     return -1;
-
-  return get_count(pid, sysnum);
+  result = get_count(pid, sysnum);
+  cprintf("count_syscall: pid: %d sysnum: %d res:%d", pid, sysnum, result);
+  return result;
 }
 
 int
