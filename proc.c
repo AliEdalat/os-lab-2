@@ -508,6 +508,21 @@ invocation_log(int pid)
               cprintf("%d %s  (%s %d, %s %d)\n",p->pid, p->syscalls[i].name,
                 a->type[0],a->int_argv[0],
                 a->type[1],a->int_argv[1]);
+            if (i == 3)
+              cprintf("%d %s  (%s %p)\n",p->pid, p->syscalls[i].name, a->type[0], a->intptr_argv);
+            if (i == 4 || i == 15)
+              cprintf("%d %s  (%s %d, %s %p, %s %d)\n",p->pid, p->syscalls[i].name,
+                a->type[0],a->int_argv[0],a->type[1],a->str_argv[0],
+                a->type[2],a->int_argv[1]);
+            if (i == 6)
+                cprintf("%d %s  (%s %p, %s %p)\n",p->pid, p->syscalls[i].name, a->type[0], a->str_argv[0], a->type[1], a->ptr_argv[0]);
+            if (i == 14)
+                cprintf("%d %s  (%s %s, %s %d)\n",p->pid, p->syscalls[i].name, a->type[0], a->str_argv[0], a->type[1], a->int_argv[0]);
+            if (i == 17 || i == 19 || i == 8)
+                cprintf("%d %s  (%s %s)\n",p->pid, p->syscalls[i].name, a->type[0], a->str_argv[0]);
+            if (i == 18)
+                cprintf("%d %s  (%s %s, %s %s)\n",p->pid, p->syscalls[i].name, a->type[0], a->str_argv[0], a->type[1], a->str_argv[1]);
+
             a = a->next;
           }
           status = 0;

@@ -167,6 +167,13 @@ static int (*syscalls[])(void) = {
 
 void fill_arglist(struct syscallarg* end, int type){
 	int int_arg,int_arg2;
+        int fd;
+        int n;
+        char *p;
+	int* fds;
+        char *path;
+        char *path1;
+        uint uargv;
 	switch(type){
                 case 3:
                 case 2:
@@ -182,7 +189,7 @@ void fill_arglist(struct syscallarg* end, int type){
                 case 13:
 			safestrcpy(end->type[0], "int", strlen("int")+1);
 			if (argint(0, &int_arg) < 0){
-   				cprintf("inc_num: bad int arg val?\n");
+   				cprintf("bad int arg val?\n");
    				break;
 			}
 			end->int_argv[0] = int_arg;
@@ -191,12 +198,73 @@ void fill_arglist(struct syscallarg* end, int type){
                         safestrcpy(end->type[0], "int", strlen("int")+1);
                         safestrcpy(end->type[1], "int", strlen("int")+1);
 			if (argint(0, &int_arg) < 0 || argint(1, &int_arg2) < 0){
-   				cprintf("inc_num: bad int arg val?\n");
+   				cprintf("bad int arg val?\n");
    				break;
 			}
 			end->int_argv[0] = int_arg;
                         end->int_argv[1] = int_arg2;
 			break;
+                case 4:
+                        safestrcpy(end->type[0], "int*", strlen("int*")+1);
+                        if (argptr(0, (void*)&fds, 2*sizeof(fds[0])) < 0){
+                                cprintf("bad int* arg val?\n");
+   				break;
+                        }
+                        end->intptr_argv = fds;
+                        break;
+                case 5:
+                case 16:
+                        safestrcpy(end->type[0], "int", strlen("int")+1);
+                        safestrcpy(end->type[1], "char*", strlen("char*")+1);
+                        safestrcpy(end->type[2], "int", strlen("int")+1);
+                        if(argint(0, &fd) < 0 || argint(2, &n) < 0 || argptr(1, &p, n) < 0){
+                                cprintf("bad 3 arg val?\n");
+   				break;
+                        }
+                        end->int_argv[0] = fd;
+                        end->int_argv[1] = n;
+                        end->str_argv[0] = p;
+                        break;
+                case 7:
+		        safestrcpy(end->type[0], "char*", strlen("char*")+1);
+                        safestrcpy(end->type[1], "char**", strlen("char**")+1);
+                        if(argstr(0, &path) < 0 || argint(1, (int*)&uargv) < 0){
+                               cprintf("bad exec arg val?\n");
+   			       break;
+                        }
+                        end->str_argv[0] = path;
+                        end->ptr_argv[0] = (char**)uargv;
+                        break;
+                case 15:
+                        safestrcpy(end->type[0], "char*", strlen("char*")+1);
+                        safestrcpy(end->type[1], "int", strlen("int")+1);
+                        if(argstr(0, &path) < 0 || argint(1, &n) < 0){
+                               cprintf("bad open arg val?\n");
+   			       break;
+                        }
+                        end->str_argv[0] = path;
+                        end->int_argv[0] = n;
+                        break;
+               case 18:
+               case 20:
+               case 9:
+                        safestrcpy(end->type[0], "char*", strlen("char*")+1);
+                        if(argstr(0, &path) < 0){
+                               cprintf("bad path arg val?\n");
+   			       break;
+                        }
+                        end->str_argv[0] = path;
+                        break;
+               case 19:
+                        safestrcpy(end->type[0], "char*", strlen("char*")+1);
+                        safestrcpy(end->type[1], "char*", strlen("char*")+1);
+                        if(argstr(0, &path) < 0 || argstr(0, &path1) < 0){
+                               cprintf("bad path arg val?\n");
+   			       break;
+                        }
+                        end->str_argv[0] = path;
+                        end->str_argv[1] = path1;
+                        break;
 	}
 }
 
