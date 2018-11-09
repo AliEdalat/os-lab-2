@@ -64,7 +64,16 @@ sys_invoked_syscalls(void)
 int
 sys_sort_syscalls(void)
 {
+  int pid, i;
 
+  if(argint(0, &pid) < 0)
+    return -1;
+  cprintf("num : %d\n", pid);
+  i = invocation_log(pid);
+  if(i >= 0){
+    return 0;
+  }
+  return -1;
 }
 
 int

@@ -175,6 +175,7 @@ void fill_arglist(struct syscallarg* end, int type){
 		case 6:
 		case 22:
                 case 23:
+                case 25:
 			safestrcpy(end->type[0], "int", strlen("int")+1);
 			if (argint(0, &int_arg) < 0){
    				cprintf("inc_num: bad int arg val?\n");
