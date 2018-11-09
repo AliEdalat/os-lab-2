@@ -107,8 +107,9 @@ extern int sys_uptime(void);
 extern int sys_inc_num(void);
 extern int sys_invoked_syscalls(void);
 extern int sys_get_count(void);
+extern int sys_sort_syscalls(void);
 
-static char* syscalls_string [24] = {
+static char* syscalls_string [25] = {
 "sys_fork",
 "sys_exit",
 "sys_wait",
@@ -133,6 +134,7 @@ static char* syscalls_string [24] = {
 "sys_inc_num",
 "sys_invoked_syscalls",
 "sys_get_count",
+"sys_sort_syscalls",
 };
 
 static int (*syscalls[])(void) = {
@@ -160,6 +162,7 @@ static int (*syscalls[])(void) = {
 [SYS_inc_num]   sys_inc_num,
 [SYS_invoked_syscalls]   sys_invoked_syscalls,
 [SYS_get_count] sys_get_count,
+[SYS_sort_syscalls] sys_sort_syscalls,
 };
 
 void fill_arglist(struct syscallarg* end, int type){

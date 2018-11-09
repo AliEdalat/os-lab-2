@@ -62,6 +62,12 @@ sys_invoked_syscalls(void)
 }
 
 int
+sys_sort_syscalls(void)
+{
+
+}
+
+int
 sys_get_count(void)
 {
   int pid, sysnum, result;
