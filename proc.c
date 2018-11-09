@@ -500,9 +500,9 @@ invocation_log(int pid)
             cprintf("%d syscall : ID :%d NAME:%s DATE: %d:%d:%d %d-%d-%d\n",p->syscalls[i].count, i+1,
               p->syscalls[i].name, d->date.second, d->date.minute, d->date.hour, d->date.day,
               d->date.month, d->date.year);
-            if (i == 0 || i == 1 || i == 2)
+            if (i == 0 || i == 1 || i == 2 || i == 13 || i == 10)
               cprintf("%d %s  (%s)\n",p->pid, p->syscalls[i].name, a->type[0]); 
-            if (i == 21 || i == 22 || i == 24 || i == 5)
+            if (i == 21 || i == 22 || i == 24 || i == 5 || i == 11 || i == 12)
               cprintf("%d %s  (%s %d)\n",p->pid, p->syscalls[i].name, a->type[0], a->int_argv[0]);
             if (i == 23)
               cprintf("%d %s  (%s %d, %s %d)\n",p->pid, p->syscalls[i].name,
