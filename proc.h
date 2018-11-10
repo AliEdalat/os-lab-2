@@ -40,6 +40,7 @@ struct syscallarg {
   int* intptr_argv;
   char* str_argv[8];
   char** ptr_argv[8];
+  struct stat* st;
   struct syscallarg* next;
 };
 

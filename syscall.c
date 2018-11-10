@@ -7,6 +7,7 @@
 #include "proc.h"
 #include "x86.h"
 #include "syscall.h"
+#include "stat.h"
 
 // User code makes a system call with INT T_SYSCALL.
 // System call number in %eax.
@@ -174,6 +175,7 @@ void fill_arglist(struct syscallarg* end, int type){
         char *path;
         char *path1;
         uint uargv;
+        struct stat *st;
 	switch(type){
                 case 3:
                 case 2:
@@ -187,6 +189,8 @@ void fill_arglist(struct syscallarg* end, int type){
                 case 25:
                 case 12:
                 case 13:
+                case 10:
+                case 21:
 			safestrcpy(end->type[0], "int", strlen("int")+1);
 			if (argint(0, &int_arg) < 0){
    				cprintf("bad int arg val?\n");
@@ -264,6 +268,28 @@ void fill_arglist(struct syscallarg* end, int type){
                         }
                         end->str_argv[0] = path;
                         end->str_argv[1] = path1;
+                        break;
+               case 8:
+                        safestrcpy(end->type[0], "int", strlen("int")+1);
+                        safestrcpy(end->type[1], "struct stat*", strlen("struct stat*")+1);
+                        if(argint(0, &n) < 0 || argptr(1, (void*)&st, sizeof(*st)) < 0){
+                               cprintf("bad fstat arg val?\n");
+   			       break;
+                        }
+                        end->int_argv[0] = n;
+                        end->st = st;
+                        break;
+              case 17:
+                        safestrcpy(end->type[0], "char*", strlen("char*")+1);
+                        safestrcpy(end->type[1], "short", strlen("short")+1);
+                        safestrcpy(end->type[2], "short", strlen("short")+1);
+                        if(argstr(0, &path) < 0 || argint(1, &n) < 0 || argint(2, &fd) < 0){
+                               cprintf("bad mknode arg val?\n");
+   			       break;
+                        }
+                        end->int_argv[0] = n;
+                        end->int_argv[1] = fd;
+                        end->str_argv[0] = path;
                         break;
 	}
 }

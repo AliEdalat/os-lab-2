@@ -36,6 +36,7 @@ void write_to_file(char** argv, int* indices, int argc)
     if (fd < 0)
     {
         printf(1, "sort: result.txt could not be opened.");
+        close(fd);
         exit();
     }
 
@@ -45,6 +46,7 @@ void write_to_file(char** argv, int* indices, int argc)
 	write(fd, " ", 1);
     }
     write(fd, "\n", 1);
+    close(fd);
 }
 
 int
