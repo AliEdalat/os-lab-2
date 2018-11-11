@@ -9,6 +9,9 @@
 #include "syscall.h"
 #include "stat.h"
 
+struct node* first_proc;
+struct node* last_proc; 
+
 // User code makes a system call with INT T_SYSCALL.
 // System call number in %eax.
 // Arguments on the stack, from the user call to the C
@@ -109,8 +112,9 @@ extern int sys_inc_num(void);
 extern int sys_invoked_syscalls(void);
 extern int sys_get_count(void);
 extern int sys_sort_syscalls(void);
+extern int sys_log_syscalls(void);
 
-static char* syscalls_string [25] = {
+static char* syscalls_string [26] = {
 "sys_fork",
 "sys_exit",
 "sys_wait",
@@ -136,6 +140,7 @@ static char* syscalls_string [25] = {
 "sys_invoked_syscalls",
 "sys_get_count",
 "sys_sort_syscalls",
+"sys_log_syscalls"
 };
 
 static int (*syscalls[])(void) = {
@@ -164,6 +169,7 @@ static int (*syscalls[])(void) = {
 [SYS_invoked_syscalls]   sys_invoked_syscalls,
 [SYS_get_count] sys_get_count,
 [SYS_sort_syscalls] sys_sort_syscalls,
+[SYS_log_syscalls] sys_log_syscalls
 };
 
 void fill_arglist(struct syscallarg* end, int type){
@@ -303,6 +309,21 @@ syscall(void)
   num = curproc->tf->eax;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     curproc->tf->eax = syscalls[num]();
+    if (first_proc == 0){
+      first_proc = (struct node*) kalloc();
+      safestrcpy(first_proc->name, syscalls_string[num-1], strlen(syscalls_string[num-1])+1);
+      cmostime(&(first_proc -> date));
+      first_proc -> pid = curproc -> pid;
+      first_proc -> next = 0;
+      last_proc = first_proc;
+    }else{
+      last_proc -> next = (struct node*) kalloc();
+      safestrcpy(last_proc -> next->name, syscalls_string[num-1], strlen(syscalls_string[num-1])+1);
+      cmostime(&(last_proc -> next-> date));
+      last_proc -> next -> pid = curproc -> pid;
+      last_proc -> next -> next = 0;
+      last_proc = last_proc -> next;
+    }
     if (curproc->syscalls[num-1].count == 0){
     	curproc->syscalls[num-1].datelist = (struct date*)kalloc();
     	curproc->syscalls[num-1].datelist->next = 0;
@@ -312,10 +333,10 @@ syscall(void)
     	curproc->syscalls[num-1].arglist_end = curproc->syscalls[num-1].arglist;
     }else{
     	curproc->syscalls[num-1].datelist_end->next = (struct date*)kalloc();
-        curproc->syscalls[num-1].datelist_end->next->next = 0;
+      curproc->syscalls[num-1].datelist_end->next->next = 0;
     	curproc->syscalls[num-1].datelist_end = curproc->syscalls[num-1].datelist_end->next;
     	curproc->syscalls[num-1].arglist_end->next = (struct syscallarg*)kalloc();
-        curproc->syscalls[num-1].arglist_end->next->next = 0;
+      curproc->syscalls[num-1].arglist_end->next->next = 0;
     	curproc->syscalls[num-1].arglist_end = curproc->syscalls[num-1].arglist_end->next;
     }
     curproc->syscalls[num-1].count = curproc->syscalls[num-1].count + 1;

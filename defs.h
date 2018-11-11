@@ -9,6 +9,7 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
+struct node;
 
 // bio.c
 void            binit(void);
@@ -105,6 +106,7 @@ int             pipewrite(struct pipe*, char*, int);
 // proc.c
 int             invocation_log(int);
 int             get_syscall_count(int, int);
+void            log_syscalls(struct node*);
 int             cpuid(void);
 void            exit(void);
 int             fork(void);

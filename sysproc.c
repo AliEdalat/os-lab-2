@@ -6,6 +6,9 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+#include "syscall.h"
+
+extern struct node* first_proc;
 
 int
 sys_fork(void)
@@ -86,6 +89,12 @@ sys_get_count(void)
   result = get_syscall_count(pid, sysnum);
   cprintf("count_syscall: pid: %d sysnum: %d res:%d\n", pid, sysnum, result);
   return result;
+}
+
+void
+sys_log_syscalls(void)
+{
+  log_syscalls(first_proc);
 }
 
 int

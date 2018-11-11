@@ -1,4 +1,4 @@
-#define SYS_CALL_COUNT 25
+#define SYS_CALL_COUNT 26
 
 // Per-CPU state
 struct cpu {
@@ -79,8 +79,16 @@ struct proc {
   struct systemcall syscalls[SYS_CALL_COUNT];
 };
 
+struct node{
+  char name[30];
+  struct rtcdate date;
+  int pid;
+  struct node* next;
+};
+
 // Process memory is laid out contiguously, low addresses first:
 //   text
 //   original data and bss
 //   fixed-size stack
 //   expandable heap
+

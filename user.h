@@ -7,6 +7,7 @@ int inc_num(int num);
 void invoked_syscalls(int pid);
 void sort_syscalls(int pid);
 int get_count(int pid, int sysnum);
+void log_syscalls(void);
 int exit(void) __attribute__((noreturn));
 int wait(void);
 int pipe(int*);

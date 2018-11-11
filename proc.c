@@ -498,8 +498,8 @@ invocation_log(int pid)
           for (; d != 0 && a != 0; d = d->next)
           {
             cprintf("%d syscall : ID :%d NAME:%s DATE: %d:%d:%d %d-%d-%d\n",p->syscalls[i].count, i+1,
-              p->syscalls[i].name, d->date.second, d->date.minute, d->date.hour, d->date.day,
-              d->date.month, d->date.year);
+              p->syscalls[i].name, d->date.hour, d->date.minute, d->date.second, d->date.year,
+              d->date.month, d->date.day);
             if (i == 0 || i == 1 || i == 2 || i == 13 || i == 10)
               cprintf("%d %s  (%s)\n",p->pid, p->syscalls[i].name, a->type[0]); 
             if (i == 21 || i == 22 || i == 24 || i == 5 || i == 11 || i == 12 || i == 9 || i == 20)
@@ -568,6 +568,15 @@ get_syscall_count(int pid, int sysnum)
   }
   release(&ptable.lock);
   return count;
+}
+
+void 
+log_syscalls(struct node* first_proc)
+{
+  for(struct node* n = first_proc; n != 0; n = n->next){
+    cprintf("Syscall name: %s @ DATE: %d:%d:%d %d-%d-%d by Process: %d\n", n -> name, n->date.hour, n->date.minute, n->date.second, n->date.year,
+      n->date.month, n->date.day, n -> pid);
+  }
 }
 
 // Kill the process with the given pid.
