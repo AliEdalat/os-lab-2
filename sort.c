@@ -2,6 +2,7 @@
 #include "stat.h"
 #include "user.h"
 #include "fcntl.h"
+#include "syscall.h"
 
 void swap(int *xp, int *yp)
 {
@@ -74,9 +75,14 @@ main(int argc, char* argv[])
 
     // inc_num(3);
     // inc_num(3);
+  
     printf(1, "syscall: %d count: %d\n", 22, get_count(getpid(), 22));
     // sort_syscalls(getpid());
     printf(1, "syscall: %d count: %d\n", 25, get_count(getpid(), 25));
+      asm volatile ("int $0x40"
+                : /* no output */
+                : "a"(SYS_inc_num), "b"(3)
+        );
     if (fork() == 0){
         invoked_syscalls(getpid());
         exit();

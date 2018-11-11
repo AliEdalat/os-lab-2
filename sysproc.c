@@ -42,10 +42,10 @@ sys_kill(void)
 int
 sys_inc_num(void)
 {
-  int num;
-  if(argint(0, &num) < 0)
-    return -1;
-  cprintf("num : %d\n", num+1);
+  register int *num asm ("ebx");
+  // if(argint(0, &num) < 0)
+  //   return -1;
+  cprintf("num : %d\n", *num+1);
   return 0;
 }
 
