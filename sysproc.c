@@ -150,3 +150,10 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+int
+sys_halt(void)
+{
+  outb(0xf4, 0x00);
+  return 0;
+}
