@@ -13,32 +13,37 @@
 
 void init_ticket_lock(struct ticket_lock* lk, char* name) {
 	lk->name = name;
-	lk->proc = 0;
+	initlock(&lk->lk, "ticket lock");
+	lk->pid = 0;
 	lk->ticket = 0;
 	lk->turn = 0;
 }
 
 void ticket_acquire(struct ticket_lock* lk) {
 	int me;
+	acquire(&lk->lk);
 	if (ticket_holding(lk))
 		panic("acquire")
 	me = read_and_increment(&lk->ticket);
 	while(lk->turn != me)
-		;
-	lk->cpu = mycpu();
-	lk->proc = proc;
-	getcallerpcs(&lk, lk->pcs);
+		sleep(lk, &lk->lk);
+	lk->pid = myproc()->pid;
+	release(&lk->lk);
 }
 
 void ticket_release(struct ticket_lock* lk) {
+	acquire(&lk->lk);
 	if (!ticket_holding(lk))
 		panic("release")
-	lk->cpu = 0;
-	lk->proc = 0;
-	lk->pcs[0] = 0;
-	lk->turn += 1;
+	if ((lk->ticket == lk->turn) && (lk->pid == myproc()->pid))
+	{
+		lk->pid = 0;
+		lk->turn += 1;
+		wakeup(lk);
+	}
+	release(&lk->lk);
 }
 
 int ticket_holding(struct ticket_lock* lk) {
-	return (lk->ticket != lk->turn) && (lk->proc == proc);
+	return (lk->ticket != lk->turn) && (lk->pid == myproc()->pid);
 }
