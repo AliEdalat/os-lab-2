@@ -135,9 +135,9 @@ read_and_increment(volatile uint* addr)
 {
   int val = 1;
   asm volatile("lock; xaddl %0, %1;"
-                : "+r" (val)
-                : "=m" (*p)
-                : "m" (*p));
+                : "+r" (val),
+                  "=m" (*addr)
+                : "m" (*addr));
   return val;
 }
 
