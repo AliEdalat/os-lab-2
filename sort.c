@@ -79,15 +79,31 @@ main(int argc, char* argv[])
     printf(1, "syscall: %d count: %d\n", 22, get_count(getpid(), 22));
     // sort_syscalls(getpid());
     printf(1, "syscall: %d count: %d\n", 25, get_count(getpid(), 25));
-      asm volatile ("int $0x40"
-                : /* no output */
+      /*asm volatile ("int $0x40"
+                : 
                 : "a"(SYS_inc_num), "b"(3)
-        );
-    if (fork() == 0){
+        );*/
+	inc_num(2);
+   /* if (fork() == 0){
         invoked_syscalls(getpid());
         exit();
     }
     wait();
-    log_syscalls();
+    log_syscalls();*/
+    int pid = 1;
+    ticketlockinit();
+    for(i = 0; i< 2; i++)
+	if(pid>0)
+		pid=fork();
+    if(pid<0)
+	printf(1,"error\n");
+    else if(pid == 0){
+	printf(1,"child add to shared counter....\n");
+	ticketlocktest();
+    } else {
+	for(i = 0; i< 2; i++)
+		wait();
+	printf(1,"finished:D\n");
+    }
     exit();
 }

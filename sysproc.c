@@ -7,8 +7,12 @@
 #include "mmu.h"
 #include "proc.h"
 #include "syscall.h"
+#include "spinlock.h"
+#include "ticket_lock.h"
 
 extern struct node* first_proc;
+struct ticket_lock ticketlock;
+int safe_count = 0;
 
 int
 sys_fork(void)
@@ -42,10 +46,11 @@ sys_kill(void)
 int
 sys_inc_num(void)
 {
-  register int *num asm ("ebx");
-  // if(argint(0, &num) < 0)
-  //   return -1;
-  cprintf("num : %d\n", *num+1);
+  int num;
+ // register int *num asm ("ebx");
+   if(argint(0, &num) < 0)
+     return -1;
+  cprintf("num : %d\n", num+1);
   return 0;
 }
 
@@ -95,6 +100,20 @@ void
 sys_log_syscalls(void)
 {
   log_syscalls(first_proc);
+}
+
+void
+sys_ticketlockinit(void)
+{
+  init_ticket_lock(&ticketlock, "ticket_lock");
+}
+
+void
+sys_ticketlocktest(void)
+{
+  ticket_acquire(&ticketlock);
+  safe_count++;
+  ticket_release(&ticketlock);
 }
 
 int

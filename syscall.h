@@ -26,3 +26,5 @@
 #define SYS_sort_syscalls 25
 #define SYS_log_syscalls 26
 #define SYS_halt 27
+#define SYS_ticketlockinit 28
+#define SYS_ticketlocktest 29

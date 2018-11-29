@@ -131,13 +131,12 @@ xchg(volatile uint *addr, uint newval)
 }
 
 static inline uint
-read_and_increment(volatile uint* addr)
+read_and_increment(volatile uint* addr, uint val)
 {
-  int val = 1;
-  asm volatile("lock; xaddl %0, %1;"
-                : "+r" (val),
-                  "=m" (*addr)
-                : "m" (*addr));
+  asm volatile("lock; xaddl %%eax, %2;" :
+               "=a" (val) :
+               "a" (val) , "m" (*addr) :
+               "memory");
   return val;
 }
 

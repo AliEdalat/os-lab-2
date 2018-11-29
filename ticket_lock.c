@@ -12,8 +12,8 @@
 #include "ticket_lock.h"
 
 void init_ticket_lock(struct ticket_lock* lk, char* name) {
-	lk->name = name;
 	initlock(&lk->lk, "ticket lock");
+	lk->name = name;
 	lk->pid = 0;
 	lk->ticket = 0;
 	lk->turn = 0;
@@ -22,11 +22,15 @@ void init_ticket_lock(struct ticket_lock* lk, char* name) {
 void ticket_acquire(struct ticket_lock* lk) {
 	int me;
 	acquire(&lk->lk);
+	//cprintf("before panic\n");
 	if (ticket_holding(lk))
-		panic("acquire")
-	me = read_and_increment(&lk->ticket);
-	while(lk->turn != me)
+		panic("acquire");
+	me = read_and_increment(&lk->ticket, 1);
+	//cprintf("after inc %d %d\n", me, lk->ticket);
+	while(lk->turn != me){
 		sleep(lk, &lk->lk);
+		//cprintf("add to sleep queue\n");
+	}
 	lk->pid = myproc()->pid;
 	release(&lk->lk);
 }
@@ -34,8 +38,8 @@ void ticket_acquire(struct ticket_lock* lk) {
 void ticket_release(struct ticket_lock* lk) {
 	acquire(&lk->lk);
 	if (!ticket_holding(lk))
-		panic("release")
-	if ((lk->ticket == lk->turn) && (lk->pid == myproc()->pid))
+		panic("release");
+	if (/*(lk->ticket == lk->turn) &&*/ (lk->pid == myproc()->pid))
 	{
 		lk->pid = 0;
 		lk->turn += 1;

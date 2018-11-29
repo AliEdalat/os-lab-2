@@ -114,8 +114,10 @@ extern int sys_get_count(void);
 extern int sys_sort_syscalls(void);
 extern int sys_log_syscalls(void);
 extern int sys_halt(void);
+extern int sys_ticketlockinit(void);
+extern int sys_ticketlocktest(void);
 
-static char* syscalls_string [27] = {
+static char* syscalls_string [29] = {
 "sys_fork",
 "sys_exit",
 "sys_wait",
@@ -142,7 +144,9 @@ static char* syscalls_string [27] = {
 "sys_get_count",
 "sys_sort_syscalls",
 "sys_log_syscalls",
-"sys_halt"
+"sys_halt",
+"sys_ticketlockinit",
+"sys_ticketlocktest"
 };
 
 static int (*syscalls[])(void) = {
@@ -172,7 +176,9 @@ static int (*syscalls[])(void) = {
 [SYS_get_count] sys_get_count,
 [SYS_sort_syscalls] sys_sort_syscalls,
 [SYS_log_syscalls] sys_log_syscalls,
-[SYS_halt]  sys_halt
+[SYS_halt]  sys_halt,
+[SYS_ticketlockinit]  sys_ticketlockinit,
+[SYS_ticketlocktest]  sys_ticketlocktest
 };
 
 void fill_arglist(struct syscallarg* end, int type){
@@ -191,6 +197,8 @@ void fill_arglist(struct syscallarg* end, int type){
 		case 1:
                 case 14:
                 case 11:
+                case 28:
+                case 29:
 			safestrcpy(end->type[0], "void", strlen("void")+1);break;
 		case 6:
 		case 22:

@@ -3,6 +3,8 @@ struct rtcdate;
 
 // system calls
 int fork(void);
+void ticketlockinit(void);
+void ticketlocktest(void);
 int inc_num(int num);
 void invoked_syscalls(int pid);
 void sort_syscalls(int pid);
